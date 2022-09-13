@@ -41,6 +41,22 @@ namespace Revanced_Builder
         //Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Azul Systems\Zulu\zulu-17 - Location of registry for ZULU
         //java.exe -jar Revanced\revanced-cli-2.10.1-all.jar -a Revanced\youtube.apk -o Revanced\revancedTest.apk -b Revanced\revanced-patches-2.52.3.jar -m Revanced\app-release-unsigned.apk
         //Events
+
+        private void YoutubeBuildModdedApp_Click(object sender, RoutedEventArgs e)
+        {
+            string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
+            string arguments = @" -jar Revanced\revanced-cli-2.10.1-all.jar -a Revanced\youtube.apk -o Revanced\revancedTest.apk -b Revanced\revanced-patches-2.52.3.jar -m Revanced\app-release-unsigned.apk";
+            ProcessStartInfo builderInfo = new ProcessStartInfo("java.exe", arguments){
+                CreateNoWindow = false,
+                UseShellExecute = true
+            };
+            builderInfo.WorkingDirectory = zuluJDKPath;
+            Process builder = new Process();
+            builder.StartInfo = builderInfo;
+            builder.Start();
+            builder.WaitForExit();
+        }
+
         private void Youtube_Features_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (YoutubeFeatures.SelectedIndex < 0)

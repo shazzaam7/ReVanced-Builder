@@ -19,6 +19,7 @@
                     <TextBlock x:Name="YoutubeFeatureDescription" Grid.Column="1"  Margin="57,99,303,127" Background="White" TextWrapping="Wrap" FontWeight="Normal" FontSize="16" IsEnabled="False" />
                     <ListBox x:Name="YoutubeExcludedFeaturesList" Grid.ColumnSpan="2" Margin="377,99,63,127" SelectionChanged="YoutubeExcludedFeaturesList_SelectionChanged"/>
                     <Button x:Name="YoutubeIncludeFeatureButton" Content="Include Feature" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="397,39,0,0" VerticalAlignment="Top" Height="25" Width="120" Click="YoutubeIncludeFeatureButton_Click"/>
+                    <Button x:Name="YoutubeBuildModdedApp" Content="Build" HorizontalAlignment="Center" Margin="0,319,0,0" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.929,1.758" Height="50" Width="104" Click="YoutubeBuildModdedApp_Click"/>
                 </Grid>
             </TabItem>
         </TabControl>
