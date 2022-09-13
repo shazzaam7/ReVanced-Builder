@@ -1,0 +1,22 @@
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\Revanced Builder.exe.config
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\Revanced Builder.exe
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\Revanced Builder.pdb
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\HtmlAgilityPack.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\Newtonsoft.Json.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\HtmlAgilityPack.pdb
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\HtmlAgilityPack.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Release\Newtonsoft.Json.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.csproj.AssemblyReference.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.csproj.SuggestedBindingRedirects.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\MainWindow.g.cs
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\App.g.cs
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder_MarkupCompile.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder_MarkupCompile.lref
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\MainWindow.baml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.g.resources
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced_Builder.Properties.Resources.resources
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.csproj.GenerateResource.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.csproj.CoreCompileInputs.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.csproj.CopyComplete
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.exe
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Release\Revanced Builder.pdb
