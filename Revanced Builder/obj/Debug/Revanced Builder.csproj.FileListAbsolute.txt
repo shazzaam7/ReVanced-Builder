@@ -1,0 +1,22 @@
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Revanced Builder.exe.config
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Revanced Builder.exe
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Revanced Builder.pdb
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.AssemblyReference.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.SuggestedBindingRedirects.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\MainWindow.g.cs
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\App.g.cs
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder_MarkupCompile.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder_MarkupCompile.lref
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\MainWindow.baml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.g.resources
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced_Builder.Properties.Resources.resources
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.GenerateResource.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.CoreCompileInputs.cache
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.exe
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.pdb
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\HtmlAgilityPack.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Newtonsoft.Json.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\HtmlAgilityPack.pdb
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\HtmlAgilityPack.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Newtonsoft.Json.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.CopyComplete
