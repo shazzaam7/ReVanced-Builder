@@ -20,3 +20,8 @@ C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\HtmlAgilityPack.xml
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Newtonsoft.Json.xml
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.CopyComplete
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\ICSharpCode.SharpZipLib.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\ICSharpCode.SharpZipLib.pdb
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\ICSharpCode.SharpZipLib.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\AppDownloadWindow.g.cs
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\AppDownloadWindow.baml

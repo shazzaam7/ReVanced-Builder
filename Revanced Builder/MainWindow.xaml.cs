@@ -28,24 +28,47 @@ namespace Revanced_Builder
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool downloadNewVersion = false;
         public MainWindow()
         {
             InitializeComponent();
+            CheckIfFoldersExist();
             GrabPatchesList();
+            GC.Collect();
+            AddURLInList();
+            GrabNewestVersionAndComapre();
+            GC.Collect();
+            DownloadReVanced();
+            GC.Collect();
         }
 
 
         List<Patch> patchesList = new List<Patch>();
         Dictionary<string, string> appDescription = new Dictionary<string, string>();
-        List<string> ExcludedFeatures = new List<string>();
-        //Computer\HKEY_LOCAL_MACHINE\SOFTWARE\Azul Systems\Zulu\zulu-17 - Location of registry for ZULU
-        //java.exe -jar Revanced\revanced-cli-2.10.1-all.jar -a Revanced\youtube.apk -o Revanced\revancedTest.apk -b Revanced\revanced-patches-2.52.3.jar -m Revanced\app-release-unsigned.apk
-        //Events
+        List<string> YoutubeExcludedFeatures = new List<string>();
+        Dictionary<string, Uri> ReVancedURL = new Dictionary<string, Uri>();
+        List<string> ReVancedCurrentVersion = new List<string>();
+        List<string> NewestReVancedVersion = new List<string>();
+        List<string> FileNames = new List<string>();
+
+        bool VersionEmpty = false;
+
+        //Events For Youtube Builder
 
         private void YoutubeBuildModdedApp_Click(object sender, RoutedEventArgs e)
         {
+            if (File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\reVancedYT.apk"))
+            {
+                File.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\reVancedYT.apk");
+            }
+            DownloadAPK("com.google.android.youtube");
             string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
-            string arguments = @" -jar Revanced\revanced-cli-2.10.1-all.jar -a Revanced\youtube.apk -o Revanced\revancedTest.apk -b Revanced\revanced-patches-2.52.3.jar -m Revanced\app-release-unsigned.apk";
+            string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\youtube.apk -o Revanced\Apks\revancedyoutube.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
+            foreach (string item in YoutubeExcludedFeatures)
+            {
+                arguments = arguments + " -e " + item;
+            }
+            Console.WriteLine(arguments);
             ProcessStartInfo builderInfo = new ProcessStartInfo("java.exe", arguments){
                 CreateNoWindow = false,
                 UseShellExecute = true
@@ -55,6 +78,11 @@ namespace Revanced_Builder
             builder.StartInfo = builderInfo;
             builder.Start();
             builder.WaitForExit();
+            Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks");
+            if (Directory.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache"))
+            {
+                Directory.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
+            }
         }
 
         private void Youtube_Features_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -112,6 +140,7 @@ namespace Revanced_Builder
             }
             YoutubeExcludedFeaturesList.Items.Add(SelectedFeature);
             YoutubeFeatures.Items.Remove(SelectedFeature);
+            YoutubeExcludedFeatures.Add(SelectedFeature);
         }
 
         private void YoutubeIncludeFeatureButton_Click(object sender, RoutedEventArgs e)
@@ -131,10 +160,11 @@ namespace Revanced_Builder
             }
             YoutubeFeatures.Items.Add(SelectedFeature);
             YoutubeExcludedFeaturesList.Items.Remove(SelectedFeature);
+            YoutubeExcludedFeatures.Remove(SelectedFeature);
         }
 
 
-        //Methods
+        //ReVanced stuff
         private async void GrabPatchesList()
         {
             HttpClient client = new HttpClient();
@@ -164,6 +194,240 @@ namespace Revanced_Builder
 
                             break;
                     }
+                }
+            }
+        }
+
+        private void CheckIfFoldersExist()
+        {
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced"))
+            {
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced");
+            }
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks"))
+            {
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks");
+            }
+            if (!File.Exists("version.txt"))
+            {
+                File.Create("version.txt");
+            }
+            if (!File.Exists("ytversion.txt"))
+            {
+                File.Create("ytversion.txt");
+            }
+            FileInfo info = new FileInfo("version.txt");
+            if (info.Length == 0)
+            {
+                VersionEmpty = true;
+            }
+        }
+
+        private void AddURLInList()
+        {
+            Uri ReVancedCLI = new Uri("https://github.com/revanced/revanced-cli/releases/latest");
+            Uri ReVancedPatches = new Uri("https://github.com/revanced/revanced-patches/releases/latest");
+            Uri ReVancedIntegrations = new Uri("https://github.com/revanced/revanced-integrations/releases/latest");
+            ReVancedURL.Add("revanced-cli", ReVancedCLI);
+            ReVancedURL.Add("revanced-patches", ReVancedPatches);
+            ReVancedURL.Add("revanced-integrations", ReVancedIntegrations);
+        }
+
+        private void GrabNewestVersionAndComapre()
+        {
+            if (VersionEmpty)
+            {
+                using (StreamWriter sw = new StreamWriter("version.txt"))
+                {
+                    foreach (Uri item in ReVancedURL.Values)
+                    {
+                        WebClient client = new WebClient();
+                        HtmlDocument doc = new HtmlDocument();
+                        doc.LoadHtml(client.DownloadString(item));
+                        var version = doc.DocumentNode.SelectSingleNode("//*[@id='repo-content-pjax-container']/div/nav/ol/li[2]/a").InnerText;
+                        string temp = version.Replace(" ", "");
+                        NewestReVancedVersion.Add(temp);
+                    }
+                    foreach (string item in NewestReVancedVersion)
+                    {
+                        sw.Write(item);
+                    }
+                    downloadNewVersion = true;
+                }
+            } else
+            {
+                using (StreamReader sr = new StreamReader("version.txt"))
+                {
+                    string line = sr.ReadLine();
+                    List<string> temp = new List<string>();
+                    while (line != null)
+                    {
+                        temp.Add(line);
+                        line = sr.ReadLine();
+                    }
+                    for (int i = 0; i < temp.Count; i++)
+                    {
+                        ReVancedCurrentVersion.Add(temp[i]);
+                    }
+                }
+                using (StreamWriter sw = new StreamWriter("version.txt"))
+                {
+                    foreach (Uri item in ReVancedURL.Values)
+                    {
+                        WebClient client = new WebClient();
+                        HtmlDocument doc = new HtmlDocument();
+                        doc.LoadHtml(client.DownloadString(item));
+                        var version = doc.DocumentNode.SelectSingleNode("//*[@id='repo-content-pjax-container']/div/nav/ol/li[2]/a").InnerText;
+                        string temp = version.Replace(" ", "");
+                        temp = temp.Substring(0, temp.LastIndexOf('\n'));
+                        NewestReVancedVersion.Add(temp);
+                    }
+                    for (int i = 0; i < NewestReVancedVersion.Count; i++)
+                    {
+                        if (ReVancedCurrentVersion[i] != NewestReVancedVersion[i])
+                        {
+                            ReVancedCurrentVersion[i] = NewestReVancedVersion[i];
+                            downloadNewVersion = true;
+                            sw.WriteLine(ReVancedCurrentVersion[i]);
+                        } else
+                        {
+                            sw.WriteLine(ReVancedCurrentVersion[i]);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DownloadReVanced()
+        {
+            if (downloadNewVersion)
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced");
+                foreach (FileInfo file in dirInfo.GetFiles())
+                {
+                    if (file.Name.StartsWith("revanced-") || file.Name.StartsWith("app"))
+                    {
+                        file.Delete();
+                    }
+                }
+                foreach (Uri link in ReVancedURL.Values)
+                {
+                    WebClient client = new WebClient();
+                    WebClient downloadClient = new WebClient();
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(client.DownloadString(link));
+                    var download = doc.DocumentNode.SelectNodes("//a");
+                    foreach (var item in download)
+                    {
+                        if (item.Attributes["href"].Value.EndsWith(".jar") || item.Attributes["href"].Value.EndsWith(".apk"))
+                        {
+                            string fileName = item.Attributes["href"].Value.Substring(item.Attributes["href"].Value.LastIndexOf('/')).Replace("/","");
+                            FileNames.Add(fileName);
+                            if (!File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\" + fileName))
+                            {
+                                Uri downloadLink = new Uri("https://github.com" + item.Attributes["href"].Value);
+                                AppDownloadWindow downloads = new AppDownloadWindow(downloadLink, fileName);
+                                downloads.ShowDialog();
+                            }
+                        }
+                    }
+                }
+            } else
+            {
+                foreach (Uri link in ReVancedURL.Values)
+                {
+                    WebClient client = new WebClient();
+                    WebClient downloadClient = new WebClient();
+                    HtmlDocument doc = new HtmlDocument();
+                    doc.LoadHtml(client.DownloadString(link));
+                    var download = doc.DocumentNode.SelectNodes("//a");
+                    foreach (var item in download)
+                    {
+                        if (item.Attributes["href"].Value.EndsWith(".jar") || item.Attributes["href"].Value.EndsWith(".apk"))
+                        {
+                            string fileName = item.Attributes["href"].Value.Substring(item.Attributes["href"].Value.LastIndexOf('/')).Replace("/", "");
+                            FileNames.Add(fileName);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void DownloadAPK(string name)
+        {
+            string version = "";
+            foreach (Patch patch in patchesList)
+            {
+                List<CompatiblePackage> temp = patch.compatiblePackages;
+                foreach (CompatiblePackage item in temp)
+                {
+                    switch (name)
+                    {
+                        default:
+                            break;
+                        case "com.google.android.youtube":
+                            if (item.name == name)
+                            {
+                                List<string> versions = item.versions;
+                                if (versions.Count > 0)
+                                {
+                                    int lastVersion = versions.Count() - 1;
+                                    if (version.Length < 1)
+                                    {
+                                        version = versions[lastVersion];
+                                    }
+                                    else
+                                    {
+                                        string[] latestTest = versions[lastVersion].Split('.');
+                                        string[] currentVersion = version.Split('.');
+                                        if (int.Parse(currentVersion[0]) <= int.Parse(latestTest[0]))
+                                        {
+                                            if (int.Parse(currentVersion[1]) <= int.Parse(latestTest[1]))
+                                            {
+                                                version = versions[lastVersion];
+                                            } else
+                                            {
+                                                if (int.Parse(currentVersion[2]) <= int.Parse(latestTest[2]))
+                                                {
+                                                    version = versions[lastVersion];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            break;
+                    }
+                }
+            }
+            FileInfo info = new FileInfo("ytversion.txt");
+            if (info.Length == 0)
+            {
+                using (StreamWriter sw = new StreamWriter("ytversion.txt"))
+                {
+                    sw.Write(version);
+                }
+                AppDownloadWindow appDownload = new AppDownloadWindow(name, version.Replace('.', '-'));
+                appDownload.ShowDialog();
+            } else
+            {
+                string testVersion;
+                using (StreamReader sr = new StreamReader("ytversion.txt"))
+                {
+                    testVersion = sr.ReadLine();
+                }
+                if (version != testVersion)
+                {
+                    using (StreamWriter sw = new StreamWriter("ytversion.txt"))
+                    {
+                        sw.Write(version);
+                    }
+                    AppDownloadWindow appDownload = new AppDownloadWindow(name, version.Replace('.', '-'));
+                    appDownload.ShowDialog();
+                }
+                else
+                {
+                    Console.WriteLine("Youtube apk is updated.");
                 }
             }
         }
