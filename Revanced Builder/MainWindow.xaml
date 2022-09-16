@@ -5,22 +5,25 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Revanced_Builder"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="600">
+        Title="ReVanced Builder" Height="450" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <TabControl>
-            <TabItem Header="Youtube ReVanced">
+            <TabItem Header="YouTube ReVanced">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0"/>
                         <ColumnDefinition Width="600"/>
                     </Grid.ColumnDefinitions>
-                    <ComboBox x:Name="YoutubeFeatures" Grid.Column="1" HorizontalAlignment="Left" Margin="77,26,0,0" VerticalAlignment="Top" Width="200" Height="26" FontSize="12" SelectionChanged="Youtube_Features_SelectionChanged"/>
-                    <Button x:Name="YoutubeExcludeFeatureButton" Grid.Column="1" Content="Exclude Feature" HorizontalAlignment="Left" Margin="397,14,0,0" VerticalAlignment="Top" Height="25" Width="120" Click="YoutubeExcludeFeatureButton_Click"/>
+                    <ComboBox x:Name="YoutubeExcludedFeatures" Grid.Column="1" HorizontalAlignment="Left" Margin="77,26,0,0" VerticalAlignment="Top" Width="200" Height="26" FontSize="12" SelectionChanged="YoutubeExcludedFeatures_SelectionChanged" SelectedIndex="0"/>
+                    <Button x:Name="YoutubeIncludeFeatureButton" Grid.Column="1" Content="Include Feature" HorizontalAlignment="Left" Margin="397,14,0,0" VerticalAlignment="Top" Height="25" Width="120" Click="YoutubeIncludeFeatureButton_Click"/>
                     <TextBlock x:Name="YoutubeFeatureDescription" Grid.Column="1"  Margin="57,99,303,127" Background="White" TextWrapping="Wrap" FontWeight="Normal" FontSize="16" IsEnabled="False" />
-                    <ListBox x:Name="YoutubeExcludedFeaturesList" Grid.ColumnSpan="2" Margin="377,99,63,127" SelectionChanged="YoutubeExcludedFeaturesList_SelectionChanged"/>
-                    <Button x:Name="YoutubeIncludeFeatureButton" Content="Include Feature" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="397,39,0,0" VerticalAlignment="Top" Height="25" Width="120" Click="YoutubeIncludeFeatureButton_Click"/>
+                    <ListBox x:Name="YoutubeIncludedFeatures" Grid.ColumnSpan="2" Margin="377,99,63,127" SelectionChanged="YoutubeExcludedFeaturesList_SelectionChanged"/>
+                    <Button x:Name="YoutubeExcludeFeatureButton" Content="Exclude Feature" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="397,39,0,0" VerticalAlignment="Top" Height="25" Width="120" Click="YoutubeExcludeFeatureButton_Click"/>
                     <Button x:Name="YoutubeBuildModdedApp" Content="Build" HorizontalAlignment="Center" Margin="0,319,0,0" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.929,1.758" Height="50" Width="104" Click="YoutubeBuildModdedApp_Click"/>
                 </Grid>
+            </TabItem>
+            <TabItem HorizontalAlignment="Center" Height="20" Header="YouTube Music ReVanced" VerticalAlignment="Center">
+                <Grid Background="#FFE5E5E5"/>
             </TabItem>
         </TabControl>
 

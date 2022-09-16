@@ -20,6 +20,7 @@ using HtmlAgilityPack;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using System.ComponentModel;
 
 namespace Revanced_Builder
 {
@@ -32,6 +33,7 @@ namespace Revanced_Builder
         public MainWindow()
         {
             InitializeComponent();
+            this.Visibility = Visibility.Hidden;
             CheckIfFoldersExist();
             GrabPatchesList();
             GC.Collect();
@@ -40,18 +42,27 @@ namespace Revanced_Builder
             GC.Collect();
             DownloadReVanced();
             GC.Collect();
+            this.Visibility = Visibility.Visible;
+            this.Closing += MainWindow_Closing;
         }
 
 
         List<Patch> patchesList = new List<Patch>();
         Dictionary<string, string> appDescription = new Dictionary<string, string>();
-        List<string> YoutubeExcludedFeatures = new List<string>();
+        List<string> YoutubeExcludedFeaturesList = new List<string>();
+        List<string> YoutubeIncludedFeaturesList = new List<string>();
         Dictionary<string, Uri> ReVancedURL = new Dictionary<string, Uri>();
         List<string> ReVancedCurrentVersion = new List<string>();
         List<string> NewestReVancedVersion = new List<string>();
         List<string> FileNames = new List<string>();
 
         bool VersionEmpty = false;
+
+        //Exit
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Environment.Exit(0);
+        }
 
         //Events For Youtube Builder
 
@@ -64,11 +75,14 @@ namespace Revanced_Builder
             DownloadAPK("com.google.android.youtube");
             string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
             string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\youtube.apk -o Revanced\Apks\revancedyoutube.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
-            foreach (string item in YoutubeExcludedFeatures)
+            foreach (string item in YoutubeIncludedFeaturesList)
+            {
+                arguments = arguments + " -i " + item;
+            }
+            foreach (string item in YoutubeExcludedFeaturesList)
             {
                 arguments = arguments + " -e " + item;
             }
-            Console.WriteLine(arguments);
             ProcessStartInfo builderInfo = new ProcessStartInfo("java.exe", arguments){
                 CreateNoWindow = false,
                 UseShellExecute = true
@@ -79,19 +93,29 @@ namespace Revanced_Builder
             builder.Start();
             builder.WaitForExit();
             Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks");
-            if (Directory.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache"))
+            try
             {
-                Directory.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
+                DirectoryInfo dirInfo = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
+                foreach (FileInfo file in dirInfo.GetFiles())
+                {
+                    if (file.Name.StartsWith("revanced") || file.Name.EndsWith(".apk") || file.Name.StartsWith("aapt"))
+                    {
+                        file.Delete();
+                    }
+                }
+            }
+            catch
+            {
             }
         }
 
-        private void Youtube_Features_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void YoutubeExcludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (YoutubeFeatures.SelectedIndex < 0)
+            if (YoutubeExcludedFeatures.SelectedIndex < 0)
             {
-                YoutubeFeatures.SelectedIndex = 0;
+                YoutubeExcludedFeatures.SelectedIndex = 0;
             }
-            if (YoutubeFeatures.Items.Count < 1)
+            if (YoutubeExcludedFeatures.Items.Count < 1)
             {
                 YoutubeFeatureDescription.Text = "";
                 return;
@@ -100,9 +124,9 @@ namespace Revanced_Builder
             YoutubeFeatureDescription.Text = "";
             try
             {
-                tempName = YoutubeFeatures.SelectedItem.ToString();
+                tempName = YoutubeExcludedFeatures.SelectedItem.ToString();
             }
-            catch 
+            catch
             {
                 return;
             }
@@ -117,52 +141,53 @@ namespace Revanced_Builder
 
         private void YoutubeExcludedFeaturesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (YoutubeExcludedFeaturesList.Items.Count < 0)
+            if (YoutubeExcludedFeatures.Items.Count < 0)
             {
                 return;
             }
-        }
-
-        private void YoutubeExcludeFeatureButton_Click(object sender, RoutedEventArgs e)
-        {
-            string SelectedFeature;
-            if (YoutubeFeatures.Items.Count < 1)
-            {
-                return;
-            }
-            try
-            {
-                SelectedFeature = YoutubeFeatures.SelectedItem.ToString();
-            }
-            catch 
-            {
-                return;
-            }
-            YoutubeExcludedFeaturesList.Items.Add(SelectedFeature);
-            YoutubeFeatures.Items.Remove(SelectedFeature);
-            YoutubeExcludedFeatures.Add(SelectedFeature);
         }
 
         private void YoutubeIncludeFeatureButton_Click(object sender, RoutedEventArgs e)
         {
-            string SelectedFeature;
-            if (YoutubeExcludedFeaturesList.Items.Count < 1 || YoutubeExcludedFeaturesList.SelectedIndex < 0)
+            if (YoutubeExcludedFeatures.SelectedIndex < 0)
             {
                 return;
             }
+            string selectedFeature;
             try
             {
-                SelectedFeature = YoutubeExcludedFeaturesList.SelectedItem.ToString();
+                selectedFeature = YoutubeExcludedFeatures.SelectedItem.ToString();
             }
             catch
             {
                 return;
             }
-            YoutubeFeatures.Items.Add(SelectedFeature);
-            YoutubeExcludedFeaturesList.Items.Remove(SelectedFeature);
-            YoutubeExcludedFeatures.Remove(SelectedFeature);
+            YoutubeExcludedFeatures.Items.Remove(selectedFeature);
+            YoutubeIncludedFeatures.Items.Add(selectedFeature);
+            YoutubeExcludedFeaturesList.Remove(selectedFeature);
+            YoutubeIncludedFeaturesList.Add(selectedFeature);
         }
 
+        private void YoutubeExcludeFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (YoutubeIncludedFeatures.SelectedIndex < 0)
+            {
+                return;
+            }
+            string selectedFeature;
+            try
+            {
+                selectedFeature = YoutubeIncludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            YoutubeExcludedFeatures.Items.Add(selectedFeature);
+            YoutubeIncludedFeatures.Items.Remove(selectedFeature);
+            YoutubeExcludedFeaturesList.Add(selectedFeature);
+            YoutubeIncludedFeaturesList.Remove(selectedFeature);
+        }
 
         //ReVanced stuff
         private async void GrabPatchesList()
@@ -173,26 +198,30 @@ namespace Revanced_Builder
             patchesList = JsonConvert.DeserializeObject<List<Patch>>(JSONAsync);
             foreach (Patch patch in patchesList)
             {
-                List<CompatiblePackage> temp = patch.compatiblePackages;
-                appDescription.Add(patch.name, patch.description);
-                foreach (CompatiblePackage item in temp)
+                if (!patch.deprecated)
                 {
-                    switch (item.name)
+                    List<CompatiblePackage> temp = patch.compatiblePackages;
+                    appDescription.Add(patch.name, patch.description);
+                    foreach (CompatiblePackage item in temp)
                     {
-                        default:
-                            break;
-                        case "com.google.android.youtube":
-                            YoutubeFeatures.Items.Add(patch.name);
-                            break;
-                        case "com.google.android.apps.youtube.music":
+                        switch (item.name)
+                        {
+                            default:
+                                break;
+                            case "com.google.android.youtube":
+                                YoutubeExcludedFeatures.Items.Add(patch.name);
+                                YoutubeExcludedFeaturesList.Add(patch.name);
+                                break;
+                            case "com.google.android.apps.youtube.music":
 
-                            break;
-                        case "com.twitter.android":
+                                break;
+                            case "com.twitter.android":
 
-                            break;
-                        case "com.reddit.frontpage":
+                                break;
+                            case "com.reddit.frontpage":
 
-                            break;
+                                break;
+                        }
                     }
                 }
             }
@@ -310,36 +339,14 @@ namespace Revanced_Builder
                         file.Delete();
                     }
                 }
-                foreach (Uri link in ReVancedURL.Values)
+                int i = 0;
+                foreach (string link in ReVancedURL.Keys)
                 {
                     WebClient client = new WebClient();
                     WebClient downloadClient = new WebClient();
                     HtmlDocument doc = new HtmlDocument();
-                    doc.LoadHtml(client.DownloadString(link));
-                    var download = doc.DocumentNode.SelectNodes("//a");
-                    foreach (var item in download)
-                    {
-                        if (item.Attributes["href"].Value.EndsWith(".jar") || item.Attributes["href"].Value.EndsWith(".apk"))
-                        {
-                            string fileName = item.Attributes["href"].Value.Substring(item.Attributes["href"].Value.LastIndexOf('/')).Replace("/","");
-                            FileNames.Add(fileName);
-                            if (!File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\" + fileName))
-                            {
-                                Uri downloadLink = new Uri("https://github.com" + item.Attributes["href"].Value);
-                                AppDownloadWindow downloads = new AppDownloadWindow(downloadLink, fileName);
-                                downloads.ShowDialog();
-                            }
-                        }
-                    }
-                }
-            } else
-            {
-                foreach (Uri link in ReVancedURL.Values)
-                {
-                    WebClient client = new WebClient();
-                    WebClient downloadClient = new WebClient();
-                    HtmlDocument doc = new HtmlDocument();
-                    doc.LoadHtml(client.DownloadString(link));
+                    Uri test = new Uri("https://github.com/revanced/" + link + "/releases/expanded_assets/" + NewestReVancedVersion[i]);
+                    doc.LoadHtml(client.DownloadString(test));
                     var download = doc.DocumentNode.SelectNodes("//a");
                     foreach (var item in download)
                     {
@@ -347,8 +354,38 @@ namespace Revanced_Builder
                         {
                             string fileName = item.Attributes["href"].Value.Substring(item.Attributes["href"].Value.LastIndexOf('/')).Replace("/", "");
                             FileNames.Add(fileName);
+                            if (!File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\" + fileName))
+                            {
+                                Uri downloadLink = new Uri("https://github.com" + item.Attributes["href"].Value);
+                                AppDownloadWindow downloads = new AppDownloadWindow(downloadLink, fileName);
+                                downloads.ShowDialog();
+                                break;
+                            }
                         }
                     }
+                    i++;
+                }
+            } else
+            {
+                int i = 0;
+                foreach (string link in ReVancedURL.Keys)
+                {
+                    WebClient client = new WebClient();
+                    WebClient downloadClient = new WebClient();
+                    HtmlDocument doc = new HtmlDocument();
+                    Uri test = new Uri("https://github.com/revanced/" + link + "/releases/expanded_assets/" + NewestReVancedVersion[i]);
+                    doc.LoadHtml(client.DownloadString(test));
+                    var download = doc.DocumentNode.SelectNodes("//a");
+                    foreach (var item in download)
+                    {
+                        if (item.Attributes["href"].Value.EndsWith(".jar") || item.Attributes["href"].Value.EndsWith(".apk"))
+                        {
+                            string fileName = item.Attributes["href"].Value.Substring(item.Attributes["href"].Value.LastIndexOf('/')).Replace("/", "");
+                            FileNames.Add(fileName);
+                            break;
+                        }
+                    }
+                    i++;
                 }
             }
         }
@@ -427,7 +464,6 @@ namespace Revanced_Builder
                 }
                 else
                 {
-                    Console.WriteLine("Youtube apk is updated.");
                 }
             }
         }

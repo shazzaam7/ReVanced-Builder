@@ -2,7 +2,6 @@ C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Revanced Builder.exe
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Revanced Builder.pdb
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.AssemblyReference.cache
-C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder.csproj.SuggestedBindingRedirects.cache
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\MainWindow.g.cs
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\App.g.cs
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\Revanced Builder_MarkupCompile.cache

@@ -58,7 +58,6 @@ namespace Revanced_Builder
                     };
                     client.DownloadFileCompleted += (send, argument) =>
                     {
-                        Console.WriteLine("Zulu is downloaded.");
                         try
                         {
                             FastZip zip = new FastZip();
@@ -76,18 +75,17 @@ namespace Revanced_Builder
                     client.DownloadFileAsync(JDKlink, "zulu.zip");
                 } else
                 {
-                    Console.WriteLine("Zulu is installed.");
                     MainWindow mainWindow = new MainWindow();
                     mainWindow.Show();
                     this.Visibility = Visibility.Hidden;
                 }
             } else
             {
-                Console.WriteLine("Zulu is installed.");
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.Show();
                 this.Visibility = Visibility.Hidden;
             }
+            GC.Collect();
         }
 
         private void ReVancedDownloader(Uri downloadLink, string fileName)
