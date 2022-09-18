@@ -110,31 +110,68 @@ namespace Revanced_Builder
             switch (appName)
             {
                 default:
+                    GC.Collect();
+                    this.Visibility = Visibility.Hidden;
                     break;
                 case "YouTube":
                     try
                     {
-                        WebClient client = new WebClient();
-                        HtmlDocument doc = new HtmlDocument();
+                        WebClient YTClient = new WebClient();
+                        HtmlDocument YTDoc = new HtmlDocument();
                         DownloadingLabel.Content = "Downloading Youtube v" + version.Replace('-','.');
-                        Uri download = new Uri($"https://www.apkmirror.com/apk/google-inc/youtube/youtube-{version}-release/youtube-{version}-2-android-apk-download");
-                        doc.LoadHtml(client.DownloadString(download));
-                        var findVersion = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div[3]/div[1]/div[2]/div[2]/div/a");
-                        Uri downloadApp = new Uri("https://www.apkmirror.com" + findVersion.Attributes["href"].Value);
-                        doc.LoadHtml(client.DownloadString(downloadApp));
-                        var findDownload = doc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div/div/div[1]/p[2]/span/a");
-                        Uri downloadLink = new Uri("https://www.apkmirror.com" + findDownload.Attributes["href"].Value);
-                        client.DownloadProgressChanged += (send, argument) =>
+                        Uri downloadYT = new Uri($"https://www.apkmirror.com/apk/google-inc/youtube/youtube-{version}-release/youtube-{version}-2-android-apk-download");
+                        YTDoc.LoadHtml(YTClient.DownloadString(downloadYT));
+                        var YTfindVersion = YTDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div[3]/div[1]/div[2]/div[2]/div/a");
+                        Uri YTdownloadApp = new Uri("https://www.apkmirror.com" + YTfindVersion.Attributes["href"].Value);
+                        YTDoc.LoadHtml(YTClient.DownloadString(YTdownloadApp));
+                        var YTfindDownload = YTDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div/div/div[1]/p[2]/span/a");
+                        Uri YTdownloadLink = new Uri("https://www.apkmirror.com" + YTfindDownload.Attributes["href"].Value);
+                        YTClient.DownloadProgressChanged += (send, argument) =>
                         {
                             DownloadProgress.Value = argument.ProgressPercentage;
                             ProgressPercentageLabel.Content = argument.ProgressPercentage.ToString() + @"%";
                         };
-                        client.DownloadFileCompleted += (send, argument) =>
+                        YTClient.DownloadFileCompleted += (send, argument) =>
                         {
                             GC.Collect();
                             this.Visibility = Visibility.Hidden;
                         };
-                        client.DownloadFileAsync(downloadLink, Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks\Youtube.apk");
+                        YTClient.DownloadFileAsync(YTdownloadLink, Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks\Youtube.apk");
+                    }
+                    catch
+                    {
+                    }
+                    break;
+                case "YouTubeMusic":
+                    try
+                    {
+                        WebClient YTMClient = new WebClient();
+                        HtmlDocument YTMDoc = new HtmlDocument();
+                        DownloadingLabel.Content = "Downloading Youtube Music v" + version.Replace('-', '.');
+                        Uri downloadYTM = new Uri($"https://www.apkmirror.com/apk/google-inc/youtube-music/youtube-music-{version}-release/youtube-music-{version}-2-android-apk-download");
+                        YTMDoc.LoadHtml(YTMClient.DownloadString(downloadYTM));
+                        var YTMfindVersion = YTMDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div[3]/div[1]/div[1]/div[2]/div/a");
+                        Console.WriteLine(YTMfindVersion.Attributes["href"].Value);
+                        Uri YTMdownloadApp = new Uri("https://www.apkmirror.com" + YTMfindVersion.Attributes["href"].Value);
+                        Console.WriteLine(YTMdownloadApp);
+                        YTMDoc.LoadHtml(YTMClient.DownloadString(YTMdownloadApp));
+                        var YTMfindDownload = YTMDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div/div/div[1]/p[2]/span/a");
+                        Console.WriteLine(YTMfindDownload.Attributes["href"].Value);
+                        Uri YTMdownloadLink = new Uri("https://www.apkmirror.com" + YTMfindDownload.Attributes["href"].Value);
+                        string test = "";
+                        YTMClient.DownloadProgressChanged += (send, argument) =>
+                        {
+                            DownloadProgress.Value = argument.ProgressPercentage;
+                            DownloadProgress.Value = argument.ProgressPercentage;
+                            ProgressPercentageLabel.Content = argument.ProgressPercentage.ToString() + @"%";
+                        };
+                        YTMClient.DownloadFileCompleted += (send, argument) =>
+                        {
+                            GC.Collect();
+                            this.Visibility = Visibility.Hidden;
+                        };
+                        YTMClient.DownloadFileAsync(YTMdownloadLink, Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks\YoutubeMusic.apk");
+
                     }
                     catch
                     {

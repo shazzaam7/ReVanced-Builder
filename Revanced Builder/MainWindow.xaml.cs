@@ -55,140 +55,6 @@ namespace Revanced_Builder
         List<appVersion> CurrentAppVersions = new List<appVersion>();
         bool ReVancedVersionEmpty = false;
 
-        //Exit
-        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
-        {
-            Environment.Exit(0);
-        }
-
-        //Youtube ReVanced Stuff
-
-        List<string> YoutubeExcludedFeaturesList = new List<string>();
-        List<string> YoutubeIncludedFeaturesList = new List<string>();
-
-        private void YoutubeBuildModdedApp_Click(object sender, RoutedEventArgs e)
-        {
-            if (File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeRevanced.apk"))
-            {
-                File.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeRevanced.apk");
-            }
-            DownloadAPK("com.google.android.youtube");
-            string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
-            string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\Apks\Youtube.apk -o Revanced\RevancedApks\YoutubeRevanced.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
-            foreach (string item in YoutubeIncludedFeaturesList)
-            {
-                arguments = arguments + " -i " + item;
-            }
-            foreach (string item in YoutubeExcludedFeaturesList)
-            {
-                arguments = arguments + " -e " + item;
-            }
-            ProcessStartInfo builderInfo = new ProcessStartInfo("java.exe", arguments){
-                CreateNoWindow = false,
-                UseShellExecute = true
-            };
-            builderInfo.WorkingDirectory = zuluJDKPath;
-            Process builder = new Process();
-            builder.StartInfo = builderInfo;
-            builder.Start();
-            builder.WaitForExit();
-            Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks");
-            try
-            {
-                DirectoryInfo dirInfo = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
-                foreach (FileInfo file in dirInfo.GetFiles())
-                {
-                    if (file.Name.StartsWith("revanced") || file.Name.EndsWith(".apk") || file.Name.StartsWith("aapt"))
-                    {
-                        file.Delete();
-                    }
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        private void YoutubeExcludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (YoutubeExcludedFeatures.SelectedIndex < 0)
-            {
-                YoutubeExcludedFeatures.SelectedIndex = 0;
-            }
-            if (YoutubeExcludedFeatures.Items.Count < 1)
-            {
-                YoutubeFeatureDescription.Text = "";
-                return;
-            }
-            string tempName;
-            YoutubeFeatureDescription.Text = "";
-            try
-            {
-                tempName = YoutubeExcludedFeatures.SelectedItem.ToString();
-            }
-            catch
-            {
-                return;
-            }
-            foreach (string key in appDescription.Keys)
-            {
-                if (key == tempName)
-                {
-                    YoutubeFeatureDescription.Text = "Feature Description\n" + appDescription[key];
-                }
-            }
-        }
-
-        private void YoutubeExcludedFeaturesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (YoutubeExcludedFeatures.Items.Count < 0)
-            {
-                return;
-            }
-        }
-
-        private void YoutubeIncludeFeatureButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (YoutubeExcludedFeatures.SelectedIndex < 0)
-            {
-                return;
-            }
-            string selectedFeature;
-            try
-            {
-                selectedFeature = YoutubeExcludedFeatures.SelectedItem.ToString();
-            }
-            catch
-            {
-                return;
-            }
-            YoutubeExcludedFeatures.Items.Remove(selectedFeature);
-            YoutubeIncludedFeatures.Items.Add(selectedFeature);
-            YoutubeExcludedFeaturesList.Remove(selectedFeature);
-            YoutubeIncludedFeaturesList.Add(selectedFeature);
-        }
-
-        private void YoutubeExcludeFeatureButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (YoutubeIncludedFeatures.SelectedIndex < 0)
-            {
-                return;
-            }
-            string selectedFeature;
-            try
-            {
-                selectedFeature = YoutubeIncludedFeatures.SelectedItem.ToString();
-            }
-            catch
-            {
-                return;
-            }
-            YoutubeExcludedFeatures.Items.Add(selectedFeature);
-            YoutubeIncludedFeatures.Items.Remove(selectedFeature);
-            YoutubeExcludedFeaturesList.Add(selectedFeature);
-            YoutubeIncludedFeaturesList.Remove(selectedFeature);
-        }
-
         //ReVanced stuff
         private async void GrabPatchesList()
         {
@@ -213,6 +79,7 @@ namespace Revanced_Builder
                                 YoutubeExcludedFeaturesList.Add(patch.name);
                                 break;
                             case "com.google.android.apps.youtube.music":
+                                YoutubeMusicExcludedFeaturesList.Add(patch.name);
                                 YoutubeMusicExcludedFeatures.Items.Add(patch.name);
                                 break;
                             case "com.twitter.android":
@@ -556,7 +423,8 @@ namespace Revanced_Builder
                     }
                     if (downloadNewAPK)
                     {
-
+                        AppDownloadWindow YoutubeMusicAPK = new AppDownloadWindow(programVersion, version.Replace('.','-'));
+                        YoutubeMusicAPK.ShowDialog();
                     } else
                     {
                         Console.WriteLine("YouTube Music APK is up to date.");
@@ -567,6 +435,271 @@ namespace Revanced_Builder
             {
                 sw.Write(JsonConvert.SerializeObject(CurrentAppVersions));
             }
+        }
+
+
+        //Exit
+        private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Environment.Exit(0);
+        }
+
+        //Youtube ReVanced Stuff
+
+        List<string> YoutubeExcludedFeaturesList = new List<string>();
+        List<string> YoutubeIncludedFeaturesList = new List<string>();
+
+        private void YoutubeBuildModdedApp_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeRevanced.apk"))
+            {
+                File.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeRevanced.apk");
+            }
+            DownloadAPK("com.google.android.youtube");
+            string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
+            string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\Apks\Youtube.apk -o Revanced\RevancedApks\YoutubeRevanced.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
+            foreach (string item in YoutubeIncludedFeaturesList)
+            {
+                arguments = arguments + " -i " + item;
+            }
+            foreach (string item in YoutubeExcludedFeaturesList)
+            {
+                arguments = arguments + " -e " + item;
+            }
+            ProcessStartInfo builderInfo = new ProcessStartInfo("java.exe", arguments)
+            {
+                CreateNoWindow = false,
+                UseShellExecute = true
+            };
+            builderInfo.WorkingDirectory = zuluJDKPath;
+            Process builder = new Process();
+            builder.StartInfo = builderInfo;
+            builder.Start();
+            builder.WaitForExit();
+            Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks");
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
+                foreach (FileInfo file in dirInfo.GetFiles())
+                {
+                    if (file.Name.StartsWith("revanced") || file.Name.EndsWith(".apk") || file.Name.StartsWith("aapt"))
+                    {
+                        file.Delete();
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void YoutubeExcludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (YoutubeExcludedFeatures.SelectedIndex < 0)
+            {
+                YoutubeExcludedFeatures.SelectedIndex = 0;
+            }
+            if (YoutubeExcludedFeatures.Items.Count < 1)
+            {
+                YoutubeFeatureDescription.Text = "";
+                return;
+            }
+            string tempName;
+            YoutubeFeatureDescription.Text = "";
+            try
+            {
+                tempName = YoutubeExcludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            foreach (string key in appDescription.Keys)
+            {
+                if (key == tempName)
+                {
+                    YoutubeFeatureDescription.Text = "Feature Description:\n" + appDescription[key];
+                }
+            }
+        }
+
+        private void YoutubeIncludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (YoutubeExcludedFeatures.Items.Count < 0)
+            {
+                return;
+            }
+        }
+
+        private void YoutubeIncludeFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (YoutubeExcludedFeatures.SelectedIndex < 0)
+            {
+                return;
+            }
+            string selectedFeature;
+            try
+            {
+                selectedFeature = YoutubeExcludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            YoutubeExcludedFeatures.Items.Remove(selectedFeature);
+            YoutubeIncludedFeatures.Items.Add(selectedFeature);
+            YoutubeExcludedFeaturesList.Remove(selectedFeature);
+            YoutubeIncludedFeaturesList.Add(selectedFeature);
+        }
+
+        private void YoutubeExcludeFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (YoutubeIncludedFeatures.SelectedIndex < 0)
+            {
+                return;
+            }
+            string selectedFeature;
+            try
+            {
+                selectedFeature = YoutubeIncludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            YoutubeExcludedFeatures.Items.Add(selectedFeature);
+            YoutubeIncludedFeatures.Items.Remove(selectedFeature);
+            YoutubeExcludedFeaturesList.Add(selectedFeature);
+            YoutubeIncludedFeaturesList.Remove(selectedFeature);
+        }
+
+        //Youtube Music ReVanced Stuff
+
+        List<string> YoutubeMusicExcludedFeaturesList = new List<string>();
+        List<string> YoutubeMusicIncludedFeaturesList = new List<string>();
+
+        private void YoutubeMusicBuildButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeMusicRevanced.apk"))
+            {
+                File.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeMusicRevanced.apk");
+            }
+            DownloadAPK("com.google.android.apps.youtube.music");
+            string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
+            string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\Apks\YoutubeMusic.apk -o Revanced\RevancedApks\YoutubeMusicRevanced.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
+            foreach (string item in YoutubeMusicIncludedFeaturesList)
+            {
+                arguments = arguments + " -i " + item;
+            }
+            foreach (string item in YoutubeMusicExcludedFeaturesList)
+            {
+                arguments = arguments + " -e " + item;
+            }
+            ProcessStartInfo builderInfo = new ProcessStartInfo("java.exe", arguments)
+            {
+                CreateNoWindow = false,
+                UseShellExecute = true
+            };
+            builderInfo.WorkingDirectory = zuluJDKPath;
+            Process builder = new Process();
+            builder.StartInfo = builderInfo;
+            builder.Start();
+            builder.WaitForExit();
+            Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks");
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
+                foreach (FileInfo file in dirInfo.GetFiles())
+                {
+                    if (file.Name.StartsWith("revanced") || file.Name.EndsWith(".apk") || file.Name.StartsWith("aapt"))
+                    {
+                        file.Delete();
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void YoutubeMusicExcludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (YoutubeMusicExcludedFeatures.SelectedIndex < 0)
+            {
+                YoutubeMusicExcludedFeatures.SelectedIndex = 0;
+            }
+            if (YoutubeMusicExcludedFeatures.Items.Count < 1)
+            {
+                YoutubeMusicFeatureDescription.Text = "";
+                return;
+            }
+            string temp;
+            YoutubeMusicFeatureDescription.Text = "";
+            try
+            {
+                temp = YoutubeMusicExcludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            foreach (string key in appDescription.Keys)
+            {
+                if (key == temp)
+                {
+                    YoutubeMusicFeatureDescription.Text = "Feature Description:\n" + appDescription[key];
+                }
+            }
+        }
+
+        private void YoutubeMusicIncludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (YoutubeMusicIncludedFeatures.Items.Count < 0)
+            {
+                return;
+            }
+        }
+
+        private void YoutubeMusicIncludeFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (YoutubeMusicExcludedFeatures.SelectedIndex < 0)
+            {
+                return;
+            }
+            string selectedFeature;
+            try
+            {
+                selectedFeature = YoutubeMusicExcludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            YoutubeMusicExcludedFeatures.Items.Remove(selectedFeature);
+            YoutubeMusicIncludedFeatures.Items.Add(selectedFeature);
+            YoutubeMusicExcludedFeaturesList.Remove(selectedFeature);
+            YoutubeMusicIncludedFeaturesList.Add(selectedFeature);
+        }
+
+        private void YoutubeMusicExcludeFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (YoutubeMusicIncludedFeatures.SelectedIndex < 0)
+            {
+                return;
+            }
+            string selectedFeature;
+            try
+            {
+                selectedFeature = YoutubeMusicIncludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            YoutubeMusicExcludedFeatures.Items.Add(selectedFeature);
+            YoutubeMusicIncludedFeatures.Items.Remove(selectedFeature);
+            YoutubeMusicExcludedFeaturesList.Add(selectedFeature);
+            YoutubeMusicIncludedFeaturesList.Remove(selectedFeature);
         }
     }
 }
