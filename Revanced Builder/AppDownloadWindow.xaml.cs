@@ -111,7 +111,7 @@ namespace Revanced_Builder
             {
                 default:
                     break;
-                case "com.google.android.youtube":
+                case "YouTube":
                     try
                     {
                         WebClient client = new WebClient();
@@ -134,7 +134,7 @@ namespace Revanced_Builder
                             GC.Collect();
                             this.Visibility = Visibility.Hidden;
                         };
-                        client.DownloadFileAsync(downloadLink, Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\youtube.apk");
+                        client.DownloadFileAsync(downloadLink, Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks\Youtube.apk");
                     }
                     catch
                     {

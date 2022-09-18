@@ -23,7 +23,9 @@
                 </Grid>
             </TabItem>
             <TabItem HorizontalAlignment="Center" Height="20" Header="YouTube Music ReVanced" VerticalAlignment="Center">
-                <Grid Background="#FFE5E5E5"/>
+                <Grid Background="#FFE5E5E5">
+                    <ComboBox x:Name="YoutubeMusicExcludedFeatures" Grid.Column="1" HorizontalAlignment="Left" Margin="77,26,0,0" VerticalAlignment="Top" Width="200" Height="26" FontSize="12"/>
+                </Grid>
             </TabItem>
         </TabControl>
 

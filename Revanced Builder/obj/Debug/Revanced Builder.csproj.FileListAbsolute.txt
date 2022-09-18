@@ -24,3 +24,17 @@ C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\ICSharpCode.SharpZipLib.xml
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\AppDownloadWindow.g.cs
 C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\obj\Debug\AppDownloadWindow.baml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Microsoft.Bcl.AsyncInterfaces.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Microsoft.Bcl.HashCode.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Buffers.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Memory.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Numerics.Vectors.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Runtime.CompilerServices.Unsafe.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Threading.Tasks.Extensions.dll
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Microsoft.Bcl.AsyncInterfaces.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\Microsoft.Bcl.HashCode.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Buffers.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Memory.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Numerics.Vectors.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Runtime.CompilerServices.Unsafe.xml
+C:\Users\ShazzaamPC\Documents\Github\ReVanced-Builder\Revanced Builder\bin\Debug\System.Threading.Tasks.Extensions.xml

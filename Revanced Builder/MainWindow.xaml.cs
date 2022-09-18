@@ -46,17 +46,14 @@ namespace Revanced_Builder
             this.Closing += MainWindow_Closing;
         }
 
-
         List<Patch> patchesList = new List<Patch>();
         Dictionary<string, string> appDescription = new Dictionary<string, string>();
-        List<string> YoutubeExcludedFeaturesList = new List<string>();
-        List<string> YoutubeIncludedFeaturesList = new List<string>();
         Dictionary<string, Uri> ReVancedURL = new Dictionary<string, Uri>();
         List<string> ReVancedCurrentVersion = new List<string>();
         List<string> NewestReVancedVersion = new List<string>();
         List<string> FileNames = new List<string>();
-
-        bool VersionEmpty = false;
+        List<appVersion> CurrentAppVersions = new List<appVersion>();
+        bool ReVancedVersionEmpty = false;
 
         //Exit
         private void MainWindow_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -64,17 +61,20 @@ namespace Revanced_Builder
             Environment.Exit(0);
         }
 
-        //Events For Youtube Builder
+        //Youtube ReVanced Stuff
+
+        List<string> YoutubeExcludedFeaturesList = new List<string>();
+        List<string> YoutubeIncludedFeaturesList = new List<string>();
 
         private void YoutubeBuildModdedApp_Click(object sender, RoutedEventArgs e)
         {
-            if (File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\reVancedYT.apk"))
+            if (File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeRevanced.apk"))
             {
-                File.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\reVancedYT.apk");
+                File.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\YoutubeRevanced.apk");
             }
             DownloadAPK("com.google.android.youtube");
             string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
-            string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\youtube.apk -o Revanced\Apks\revancedyoutube.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
+            string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\Apks\Youtube.apk -o Revanced\RevancedApks\YoutubeRevanced.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
             foreach (string item in YoutubeIncludedFeaturesList)
             {
                 arguments = arguments + " -i " + item;
@@ -92,7 +92,7 @@ namespace Revanced_Builder
             builder.StartInfo = builderInfo;
             builder.Start();
             builder.WaitForExit();
-            Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks");
+            Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks");
             try
             {
                 DirectoryInfo dirInfo = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
@@ -213,7 +213,7 @@ namespace Revanced_Builder
                                 YoutubeExcludedFeaturesList.Add(patch.name);
                                 break;
                             case "com.google.android.apps.youtube.music":
-
+                                YoutubeMusicExcludedFeatures.Items.Add(patch.name);
                                 break;
                             case "com.twitter.android":
 
@@ -227,6 +227,13 @@ namespace Revanced_Builder
             }
         }
 
+        private void GrabDefault()
+        {
+            WebClient client = new WebClient();
+            Uri url = new Uri("https://raw.githubusercontent.com/shazzaam7/ReVanced-Builder/main/default.json");
+            client.DownloadFile(url, Directory.GetCurrentDirectory() + @"\versions\appVersions.json");
+        }
+
         private void CheckIfFoldersExist()
         {
             if (!Directory.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced"))
@@ -237,18 +244,32 @@ namespace Revanced_Builder
             {
                 Directory.CreateDirectory(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks");
             }
-            if (!File.Exists("version.txt"))
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks"))
             {
-                File.Create("version.txt");
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks");
             }
-            if (!File.Exists("ytversion.txt"))
+            if (!Directory.Exists(Directory.GetCurrentDirectory() + @"\versions"))
             {
-                File.Create("ytversion.txt");
+                Directory.CreateDirectory(Directory.GetCurrentDirectory() + @"\versions");
             }
-            FileInfo info = new FileInfo("version.txt");
+            if (!File.Exists(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
+            {
+                File.Create(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt");
+            }
+            if (!File.Exists(Directory.GetCurrentDirectory() + @"\versions\appVersions.json"))
+            {
+                GrabDefault();
+            }
+            FileInfo info = new FileInfo(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt");
             if (info.Length == 0)
             {
-                VersionEmpty = true;
+                ReVancedVersionEmpty = true;
+            }
+            FileInfo appVersionInfo = new FileInfo(Directory.GetCurrentDirectory() + @"\versions\appVersions.json");
+            if (appVersionInfo.Length == 0)
+            {
+                Console.WriteLine("Empty");
+                
             }
         }
 
@@ -264,9 +285,9 @@ namespace Revanced_Builder
 
         private void GrabNewestVersionAndComapre()
         {
-            if (VersionEmpty)
+            if (ReVancedVersionEmpty)
             {
-                using (StreamWriter sw = new StreamWriter("version.txt"))
+                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
                 {
                     foreach (Uri item in ReVancedURL.Values)
                     {
@@ -285,7 +306,7 @@ namespace Revanced_Builder
                 }
             } else
             {
-                using (StreamReader sr = new StreamReader("version.txt"))
+                using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
                 {
                     string line = sr.ReadLine();
                     List<string> temp = new List<string>();
@@ -299,7 +320,7 @@ namespace Revanced_Builder
                         ReVancedCurrentVersion.Add(temp[i]);
                     }
                 }
-                using (StreamWriter sw = new StreamWriter("version.txt"))
+                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
                 {
                     foreach (Uri item in ReVancedURL.Values)
                     {
@@ -390,9 +411,20 @@ namespace Revanced_Builder
             }
         }
 
+        //APK Downloader
         private void DownloadAPK(string name)
         {
+            using (StreamReader sr = File.OpenText(Directory.GetCurrentDirectory() + @"\versions\appVersions.json"))
+            {
+                string line = sr.ReadToEnd();
+                CurrentAppVersions = JsonConvert.DeserializeObject<List<appVersion>>(line);
+            }
+            foreach (appVersion item in CurrentAppVersions)
+            {
+                Console.WriteLine(item.name + " " + item.version);
+            }
             string version = "";
+            string programVersion = "";
             foreach (Patch patch in patchesList)
             {
                 List<CompatiblePackage> temp = patch.compatiblePackages;
@@ -403,6 +435,7 @@ namespace Revanced_Builder
                         default:
                             break;
                         case "com.google.android.youtube":
+                            programVersion = "YouTube";
                             if (item.name == name)
                             {
                                 List<string> versions = item.versions;
@@ -422,7 +455,8 @@ namespace Revanced_Builder
                                             if (int.Parse(currentVersion[1]) <= int.Parse(latestTest[1]))
                                             {
                                                 version = versions[lastVersion];
-                                            } else
+                                            }
+                                            else
                                             {
                                                 if (int.Parse(currentVersion[2]) <= int.Parse(latestTest[2]))
                                                 {
@@ -434,37 +468,104 @@ namespace Revanced_Builder
                                 }
                             }
                             break;
+                        case "com.google.android.apps.youtube.music":
+                            if (item.name == name)
+                            {
+                                List<string> versions = item.versions;
+                                if (versions.Count > 0)
+                                {
+                                    int lastVersion = versions.Count() - 1;
+                                    if (version.Length < 1)
+                                    {
+                                        version = versions[lastVersion];
+                                    }
+                                    else
+                                    {
+                                        string[] latestTest = versions[lastVersion].Split('.');
+                                        string[] currentVersion = version.Split('.');
+                                        if (int.Parse(currentVersion[0]) <= int.Parse(latestTest[0]))
+                                        {
+                                            if (int.Parse(currentVersion[1]) <= int.Parse(latestTest[1]))
+                                            {
+                                                version = versions[lastVersion];
+                                            }
+                                            else
+                                            {
+                                                if (int.Parse(currentVersion[2]) <= int.Parse(latestTest[2]))
+                                                {
+                                                    version = versions[lastVersion];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            programVersion = "YouTubeMusic";
+                            break;
                     }
                 }
             }
-            FileInfo info = new FileInfo("ytversion.txt");
-            if (info.Length == 0)
+            appVersion tempVersion = new appVersion();
+            bool downloadNewAPK = false;
+            switch (programVersion)
             {
-                using (StreamWriter sw = new StreamWriter("ytversion.txt"))
-                {
-                    sw.Write(version);
-                }
-                AppDownloadWindow appDownload = new AppDownloadWindow(name, version.Replace('.', '-'));
-                appDownload.ShowDialog();
-            } else
-            {
-                string testVersion;
-                using (StreamReader sr = new StreamReader("ytversion.txt"))
-                {
-                    testVersion = sr.ReadLine();
-                }
-                if (version != testVersion)
-                {
-                    using (StreamWriter sw = new StreamWriter("ytversion.txt"))
+                default:
+                    break;
+                case "YouTube":
+                    tempVersion.name = programVersion;
+                    tempVersion.version = version;
+                    foreach (appVersion item in CurrentAppVersions)
                     {
-                        sw.Write(version);
+                        if (item.name == tempVersion.name)
+                        {
+                            if (item.version != tempVersion.version)
+                            {
+                                int i = CurrentAppVersions.IndexOf(item);
+                                CurrentAppVersions.RemoveAt(i);
+                                CurrentAppVersions.Insert(i, tempVersion);
+                                downloadNewAPK = true;
+                                break;
+                            }
+                        }
                     }
-                    AppDownloadWindow appDownload = new AppDownloadWindow(name, version.Replace('.', '-'));
-                    appDownload.ShowDialog();
-                }
-                else
-                {
-                }
+                    if (downloadNewAPK)
+                    {
+                        AppDownloadWindow YoutubeAPKDownload = new AppDownloadWindow(programVersion, version.Replace('.', '-'));
+                        YoutubeAPKDownload.ShowDialog();
+                    } else
+                    {
+                        Console.WriteLine("YouTube APK is up to date.");
+                    }
+                    break;
+                case "YouTubeMusic":
+                    tempVersion.name = programVersion;
+                    tempVersion.version = version;
+                    foreach (appVersion item in CurrentAppVersions)
+                    {
+                        if (item.name == tempVersion.name)
+                        {
+                            if (item.version != tempVersion.version)
+                            {
+                                int i = CurrentAppVersions.IndexOf(item);
+                                CurrentAppVersions.RemoveAt(i);
+                                CurrentAppVersions.Insert(i, tempVersion);
+                                downloadNewAPK = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (downloadNewAPK)
+                    {
+
+                    } else
+                    {
+                        Console.WriteLine("YouTube Music APK is up to date.");
+                    }
+                    break;
+            }
+            using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\appVersions.json"))
+            {
+                sw.Write(JsonConvert.SerializeObject(CurrentAppVersions));
             }
         }
     }
