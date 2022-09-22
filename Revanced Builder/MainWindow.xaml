@@ -8,7 +8,7 @@
         Title="ReVanced Builder" Height="450" Width="600" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid>
         <TabControl>
-            <TabItem Header="YouTube ReVanced">
+            <TabItem Header="YouTube">
                 <Grid Background="#FFE5E5E5">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="0"/>
@@ -22,8 +22,12 @@
                     <Button x:Name="YoutubeBuildModdedApp" Content="Build" HorizontalAlignment="Center" Margin="0,319,0,0" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.929,1.758" Height="50" Width="104" Click="YoutubeBuildModdedApp_Click"/>
                 </Grid>
             </TabItem>
-            <TabItem HorizontalAlignment="Center" Height="20" Header="YouTube Music ReVanced" VerticalAlignment="Center">
+            <TabItem Header="YouTube Music" >
                 <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="600"/>
+                    </Grid.ColumnDefinitions>
                     <ComboBox x:Name="YoutubeMusicExcludedFeatures" Grid.Column="1" HorizontalAlignment="Left" Margin="77,26,0,0" VerticalAlignment="Top" Width="200" Height="26" FontSize="12" SelectionChanged="YoutubeMusicExcludedFeatures_SelectionChanged" SelectedIndex="0"/>
                     <TextBlock x:Name="YoutubeMusicFeatureDescription" Grid.Column="1"  Margin="57,99,303,127" Background="White" TextWrapping="Wrap" FontWeight="Normal" FontSize="16" IsEnabled="False" />
                     <ListBox x:Name="YoutubeMusicIncludedFeatures" Grid.ColumnSpan="2" Margin="377,99,63,127" SelectionChanged="YoutubeMusicIncludedFeatures_SelectionChanged"/>
@@ -32,7 +36,48 @@
                     <Button x:Name="YoutubeMusicBuildButton" Content="Build" HorizontalAlignment="Center" Margin="0,319,0,0" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.929,1.758" Height="50" Width="104" Click="YoutubeMusicBuildButton_Click"/>
                 </Grid>
             </TabItem>
+            <TabItem Header="TikTok">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="600"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="TikTokExcludedFeatures" Grid.Column="1" HorizontalAlignment="Left" Margin="77,26,0,0" VerticalAlignment="Top" Width="200" Height="26" FontSize="12" SelectedIndex="0" SelectionChanged="TikTokExcludedFeatures_SelectionChanged"/>
+                    <TextBlock x:Name="TikTokFeatureDescription" Grid.Column="1"  Margin="57,99,303,127" Background="White" TextWrapping="Wrap" FontWeight="Normal" FontSize="16" IsEnabled="False"/>
+                    <ListBox x:Name="TikTokIncludedFeatures" Grid.ColumnSpan="2" Margin="377,99,63,127" SelectionChanged="TikTokIncludedFeatures_SelectionChanged"/>
+                    <Button x:Name="TikTokIncludeFeatureButton" Grid.Column="1" HorizontalAlignment="Left" Margin="397,14,0,0" VerticalAlignment="Top" Height="25" Width="120" Content="Include Feature" Click="TikTokIncludeFeatureButton_Click"/>
+                    <Button x:Name="TikTokExcludeFeatureButton" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="397,39,0,0" VerticalAlignment="Top" Height="25" Width="120" Content="Exclude Feature" Click="TikTokExcludeFeatureButton_Click"/>
+                    <Button x:Name="TikTokBuildButton" HorizontalAlignment="Center" Margin="0,319,0,0" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.929,1.758" Height="50" Width="104" Content="Build" Click="TikTokBuildButton_Click"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Twitter">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="600"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="TwitterExcludedFeatures" Grid.Column="1" HorizontalAlignment="Left" Margin="77,26,0,0" VerticalAlignment="Top" Width="200" Height="26" FontSize="12" SelectedIndex="0"/>
+                    <TextBlock x:Name="TwitterFeatureDescription" Grid.Column="1"  Margin="57,99,303,127" Background="White" TextWrapping="Wrap" FontWeight="Normal" FontSize="16" IsEnabled="False"/>
+                    <ListBox x:Name="TwitterIncludedFeatures" Grid.ColumnSpan="2" Margin="377,99,63,127"/>
+                    <Button x:Name="TwitterIncludeFeatureButton" Grid.Column="1" HorizontalAlignment="Left" Margin="397,14,0,0" VerticalAlignment="Top" Height="25" Width="120"/>
+                    <Button x:Name="TwitterExcludeFeatureButton" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="397,39,0,0" VerticalAlignment="Top" Height="25" Width="120"/>
+                    <Button x:Name="TwitterBuildButton" HorizontalAlignment="Center" Margin="0,319,0,0" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.929,1.758" Height="50" Width="104"/>
+                </Grid>
+            </TabItem>
+            <TabItem Header="Reddit">
+                <Grid Background="#FFE5E5E5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0"/>
+                        <ColumnDefinition Width="600"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox x:Name="RedditExcludedFeatures" Grid.Column="1" HorizontalAlignment="Left" Margin="77,26,0,0" VerticalAlignment="Top" Width="200" Height="26" FontSize="12" SelectedIndex="0"/>
+                    <TextBlock x:Name="RedditFeatureDescription" Grid.Column="1"  Margin="57,99,303,127" Background="White" TextWrapping="Wrap" FontWeight="Normal" FontSize="16" IsEnabled="False"/>
+                    <ListBox x:Name="RedditIncludedFeatures" Grid.ColumnSpan="2" Margin="377,99,63,127"/>
+                    <Button x:Name="RedditIncludeFeatureButton" Grid.Column="1" HorizontalAlignment="Left" Margin="397,14,0,0" VerticalAlignment="Top" Height="25" Width="120"/>
+                    <Button x:Name="RedditExcludeFeatureButton" Grid.ColumnSpan="2" HorizontalAlignment="Left" Margin="397,39,0,0" VerticalAlignment="Top" Height="25" Width="120"/>
+                    <Button x:Name="RedditBuildButton" HorizontalAlignment="Center" Margin="0,319,0,0" VerticalAlignment="Top" Grid.Column="1" RenderTransformOrigin="0.929,1.758" Height="50" Width="104"/>
+                </Grid>
+            </TabItem>
         </TabControl>
-
     </Grid>
 </Window>

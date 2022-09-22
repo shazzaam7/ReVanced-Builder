@@ -81,6 +81,7 @@ namespace Revanced_Builder
                 }
             } else
             {
+                Console.WriteLine("ZuluJDK is already installed.");
                 MainWindow mainWindow = new MainWindow();
                 mainWindow.Show();
                 this.Visibility = Visibility.Hidden;
@@ -151,14 +152,10 @@ namespace Revanced_Builder
                         Uri downloadYTM = new Uri($"https://www.apkmirror.com/apk/google-inc/youtube-music/youtube-music-{version}-release/youtube-music-{version}-2-android-apk-download");
                         YTMDoc.LoadHtml(YTMClient.DownloadString(downloadYTM));
                         var YTMfindVersion = YTMDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div[3]/div[1]/div[1]/div[2]/div/a");
-                        Console.WriteLine(YTMfindVersion.Attributes["href"].Value);
                         Uri YTMdownloadApp = new Uri("https://www.apkmirror.com" + YTMfindVersion.Attributes["href"].Value);
-                        Console.WriteLine(YTMdownloadApp);
                         YTMDoc.LoadHtml(YTMClient.DownloadString(YTMdownloadApp));
                         var YTMfindDownload = YTMDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div/div/div[1]/p[2]/span/a");
-                        Console.WriteLine(YTMfindDownload.Attributes["href"].Value);
                         Uri YTMdownloadLink = new Uri("https://www.apkmirror.com" + YTMfindDownload.Attributes["href"].Value);
-                        string test = "";
                         YTMClient.DownloadProgressChanged += (send, argument) =>
                         {
                             DownloadProgress.Value = argument.ProgressPercentage;
@@ -175,6 +172,43 @@ namespace Revanced_Builder
                     }
                     catch
                     {
+                    }
+                    break;
+                case "TikTok":
+                    try
+                    {
+                        WebClient TClient = new WebClient();
+                        HtmlDocument TDoc = new HtmlDocument();
+                        Uri TikTokFindLatestVersion = new Uri("https://www.apkmirror.com/uploads/?appcategory=tik-tok");
+                        TDoc.LoadHtml(TClient.DownloadString(TikTokFindLatestVersion));
+                        var TikTokLatestVersion = TDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/div[2]/div/div[1]/div[1]/div/div[2]/div/h5/a");
+                        Uri TikTokLatestVersionLink = new Uri("http://www.apkmirror.com" + TikTokLatestVersion.Attributes["href"].Value);
+                        DownloadingLabel.Content = "Downloading TikTok v" + TikTokLatestVersion.InnerText.Replace("TikTok ", "");
+                        TDoc.LoadHtml(TClient.DownloadString(TikTokLatestVersionLink));
+                        var TikTokFindDownload = TDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/div[4]/div[2]/div/div[3]/div[1]/a");
+                        Uri TikTokDownloadLink = new Uri("https://www.apkmirror.com" + TikTokFindDownload.Attributes["href"].Value);
+                        TDoc.LoadHtml(TClient.DownloadString(TikTokDownloadLink));
+                        var TikTokFindDownloadAPK = TDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div[3]/div[1]/div[1]/div[2]/div/a");
+                        Uri TikTokDownloadAPK = new Uri("https://www.apkmirror.com" + TikTokFindDownloadAPK.Attributes["href"].Value);
+                        TDoc.LoadHtml(TClient.DownloadString(TikTokDownloadAPK));
+                        var TikTokDownloadAPKLink = TDoc.DocumentNode.SelectSingleNode("/html/body/div[2]/div/div[1]/article/div[2]/div/div/div[1]/p[2]/span/a");
+                        Uri TikTokDownload = new Uri("https://www.apkmirror.com" + TikTokDownloadAPKLink.Attributes["href"].Value);
+                        TClient.DownloadProgressChanged += (send, argument) =>
+                        {
+                            DownloadProgress.Value = argument.ProgressPercentage;
+                            DownloadProgress.Value = argument.ProgressPercentage;
+                            ProgressPercentageLabel.Content = argument.ProgressPercentage.ToString() + @"%";
+                        };
+                        TClient.DownloadFileCompleted += (send, argument) =>
+                        {
+                            GC.Collect();
+                            this.Visibility = Visibility.Hidden;
+                        };
+                        TClient.DownloadFileAsync(TikTokDownload, Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\Apks\TikTok.apk");
+                    }
+                    catch
+                    {
+                        return;
                     }
                     break;
             }

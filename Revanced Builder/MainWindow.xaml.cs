@@ -21,6 +21,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 
 namespace Revanced_Builder
 {
@@ -30,6 +31,7 @@ namespace Revanced_Builder
     public partial class MainWindow : Window
     {
         bool downloadNewVersion = false;
+        List<string> FileNames = new List<string>();
         public MainWindow()
         {
             InitializeComponent();
@@ -49,9 +51,8 @@ namespace Revanced_Builder
         List<Patch> patchesList = new List<Patch>();
         Dictionary<string, string> appDescription = new Dictionary<string, string>();
         Dictionary<string, Uri> ReVancedURL = new Dictionary<string, Uri>();
-        List<string> ReVancedCurrentVersion = new List<string>();
-        List<string> NewestReVancedVersion = new List<string>();
-        List<string> FileNames = new List<string>();
+        List<appVersion> ReVancedCurrentVersion = new List<appVersion>();
+        List<appVersion> NewestReVancedVersion = new List<appVersion>();
         List<appVersion> CurrentAppVersions = new List<appVersion>();
         bool ReVancedVersionEmpty = false;
 
@@ -73,20 +74,33 @@ namespace Revanced_Builder
                         switch (item.name)
                         {
                             default:
+                                YoutubeExcludedFeaturesList.Add(patch.name);
+                                YoutubeMusicExcludedFeaturesList.Add(patch.name);
+                                TikTokExcludedFeaturesList.Add(patch.name);
                                 break;
                             case "com.google.android.youtube":
                                 YoutubeExcludedFeatures.Items.Add(patch.name);
                                 YoutubeExcludedFeaturesList.Add(patch.name);
+                                YoutubeMusicExcludedFeaturesList.Add(patch.name);
+                                TikTokExcludedFeaturesList.Add(patch.name);
                                 break;
                             case "com.google.android.apps.youtube.music":
-                                YoutubeMusicExcludedFeaturesList.Add(patch.name);
                                 YoutubeMusicExcludedFeatures.Items.Add(patch.name);
+                                YoutubeExcludedFeaturesList.Add(patch.name);
+                                YoutubeMusicExcludedFeaturesList.Add(patch.name);
+                                TikTokExcludedFeaturesList.Add(patch.name);
                                 break;
-                            case "com.twitter.android":
-
+                            case "com.zhiliaoapp.musically":
+                                TikTokExcludedFeatures.Items.Add(patch.name);
+                                YoutubeExcludedFeaturesList.Add(patch.name);
+                                YoutubeMusicExcludedFeaturesList.Add(patch.name);
+                                TikTokExcludedFeaturesList.Add(patch.name);
                                 break;
                             case "com.reddit.frontpage":
 
+                                YoutubeExcludedFeaturesList.Add(patch.name);
+                                YoutubeMusicExcludedFeaturesList.Add(patch.name);
+                                TikTokExcludedFeaturesList.Add(patch.name);
                                 break;
                         }
                     }
@@ -119,24 +133,20 @@ namespace Revanced_Builder
             {
                 Directory.CreateDirectory(Directory.GetCurrentDirectory() + @"\versions");
             }
-            if (!File.Exists(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
+            if (!File.Exists(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.json"))
             {
-                File.Create(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt");
+                File.Create(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.json");
+                Console.WriteLine("ReVanced.json doesn't exist");
+                ReVancedVersionEmpty = true;
             }
-            if (!File.Exists(Directory.GetCurrentDirectory() + @"\versions\appVersions.json"))
-            {
-                GrabDefault();
-            }
-            FileInfo info = new FileInfo(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt");
+            FileInfo info = new FileInfo(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.json");
             if (info.Length == 0)
             {
                 ReVancedVersionEmpty = true;
             }
-            FileInfo appVersionInfo = new FileInfo(Directory.GetCurrentDirectory() + @"\versions\appVersions.json");
-            if (appVersionInfo.Length == 0)
+            if (!File.Exists(Directory.GetCurrentDirectory() + @"\versions\appVersions.json"))
             {
-                Console.WriteLine("Empty");
-                
+                GrabDefault();
             }
         }
 
@@ -154,62 +164,61 @@ namespace Revanced_Builder
         {
             if (ReVancedVersionEmpty)
             {
-                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
+                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.json"))
                 {
-                    foreach (Uri item in ReVancedURL.Values)
+                    foreach (string key in ReVancedURL.Keys)
                     {
                         WebClient client = new WebClient();
                         HtmlDocument doc = new HtmlDocument();
-                        doc.LoadHtml(client.DownloadString(item));
+                        doc.LoadHtml(client.DownloadString(ReVancedURL[key]));
                         var version = doc.DocumentNode.SelectSingleNode("//*[@id='repo-content-pjax-container']/div/nav/ol/li[2]/a").InnerText;
-                        string temp = version.Replace(" ", "");
+                        appVersion temp = new appVersion();
+                        temp.version = version.Replace(" ", "").Replace("\n", "");
+                        temp.name = key;
                         NewestReVancedVersion.Add(temp);
                     }
-                    foreach (string item in NewestReVancedVersion)
-                    {
-                        sw.Write(item);
-                    }
+                    sw.Write(JsonConvert.SerializeObject(NewestReVancedVersion));
                     downloadNewVersion = true;
                 }
             } else
             {
-                using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
+                using (StreamReader sr = new StreamReader(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.json"))
                 {
-                    string line = sr.ReadLine();
-                    List<string> temp = new List<string>();
-                    while (line != null)
-                    {
-                        temp.Add(line);
-                        line = sr.ReadLine();
-                    }
-                    for (int i = 0; i < temp.Count; i++)
-                    {
-                        ReVancedCurrentVersion.Add(temp[i]);
-                    }
+                    ReVancedCurrentVersion = JsonConvert.DeserializeObject<List<appVersion>>(sr.ReadToEnd());
                 }
-                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.txt"))
+                Console.WriteLine("Currently installed ReVanced:");
+                foreach (appVersion item in ReVancedCurrentVersion)
                 {
-                    foreach (Uri item in ReVancedURL.Values)
+                    Console.WriteLine(item.name + " " + item.version);
+                }
+                using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\ReVancedversion.json"))
+                {
+                    foreach (string key in ReVancedURL.Keys)
                     {
                         WebClient client = new WebClient();
                         HtmlDocument doc = new HtmlDocument();
-                        doc.LoadHtml(client.DownloadString(item));
+                        doc.LoadHtml(client.DownloadString(ReVancedURL[key]));
                         var version = doc.DocumentNode.SelectSingleNode("//*[@id='repo-content-pjax-container']/div/nav/ol/li[2]/a").InnerText;
-                        string temp = version.Replace(" ", "");
-                        temp = temp.Substring(0, temp.LastIndexOf('\n'));
+                        appVersion temp = new appVersion();
+                        temp.version = version.Replace(" ", "").Replace("\n", "");
+                        temp.name = key;
                         NewestReVancedVersion.Add(temp);
                     }
-                    for (int i = 0; i < NewestReVancedVersion.Count; i++)
+                    for (int i = 0; i < ReVancedCurrentVersion.Count; i++)
                     {
-                        if (ReVancedCurrentVersion[i] != NewestReVancedVersion[i])
+                        if (ReVancedCurrentVersion[i].version != NewestReVancedVersion[i].version)
                         {
-                            ReVancedCurrentVersion[i] = NewestReVancedVersion[i];
+                            Console.WriteLine("ReVanced Update available.");
                             downloadNewVersion = true;
-                            sw.WriteLine(ReVancedCurrentVersion[i]);
-                        } else
-                        {
-                            sw.WriteLine(ReVancedCurrentVersion[i]);
+                            break;
                         }
+                    }
+                    if (downloadNewVersion)
+                    {
+                        sw.Write(JsonConvert.SerializeObject(NewestReVancedVersion));
+                    } else
+                    {
+                        sw.Write(JsonConvert.SerializeObject(ReVancedCurrentVersion));
                     }
                 }
             }
@@ -233,7 +242,7 @@ namespace Revanced_Builder
                     WebClient client = new WebClient();
                     WebClient downloadClient = new WebClient();
                     HtmlDocument doc = new HtmlDocument();
-                    Uri test = new Uri("https://github.com/revanced/" + link + "/releases/expanded_assets/" + NewestReVancedVersion[i]);
+                    Uri test = new Uri("https://github.com/revanced/" + link + "/releases/expanded_assets/" + NewestReVancedVersion[i].version);
                     doc.LoadHtml(client.DownloadString(test));
                     var download = doc.DocumentNode.SelectNodes("//a");
                     foreach (var item in download)
@@ -255,13 +264,14 @@ namespace Revanced_Builder
                 }
             } else
             {
+                Console.WriteLine("ReVanced is up to date!");
                 int i = 0;
                 foreach (string link in ReVancedURL.Keys)
                 {
                     WebClient client = new WebClient();
                     WebClient downloadClient = new WebClient();
                     HtmlDocument doc = new HtmlDocument();
-                    Uri test = new Uri("https://github.com/revanced/" + link + "/releases/expanded_assets/" + NewestReVancedVersion[i]);
+                    Uri test = new Uri("https://github.com/revanced/" + link + "/releases/expanded_assets/" + NewestReVancedVersion[i].version);
                     doc.LoadHtml(client.DownloadString(test));
                     var download = doc.DocumentNode.SelectNodes("//a");
                     foreach (var item in download)
@@ -369,6 +379,43 @@ namespace Revanced_Builder
                             }
                             programVersion = "YouTubeMusic";
                             break;
+                        case "com.zhiliaoapp.musically":
+                            if (item.name == name)
+                            {
+                                List<string> versions = item.versions;
+                                if (versions.Count > 0)
+                                {
+                                    int lastVersion = versions.Count() - 1;
+                                    if (version.Length < 1)
+                                    {
+                                        version = versions[lastVersion];
+                                    }
+                                    else
+                                    {
+                                        string[] latestTest = versions[lastVersion].Split('.');
+                                        string[] currentVersion = version.Split('.');
+                                        if (int.Parse(currentVersion[0]) <= int.Parse(latestTest[0]))
+                                        {
+                                            if (int.Parse(currentVersion[1]) <= int.Parse(latestTest[1]))
+                                            {
+                                                version = versions[lastVersion];
+                                            }
+                                            else
+                                            {
+                                                if (int.Parse(currentVersion[2]) <= int.Parse(latestTest[2]))
+                                                {
+                                                    version = versions[lastVersion];
+                                                }
+                                            }
+                                        }
+                                    }
+                                } else
+                                {
+                                    version = "all";
+                                }
+                            }
+                            programVersion = "TikTok";
+                            break;
                     }
                 }
             }
@@ -430,6 +477,37 @@ namespace Revanced_Builder
                         Console.WriteLine("YouTube Music APK is up to date.");
                     }
                     break;
+                case "TikTok":
+                    tempVersion.name = programVersion;
+                    tempVersion.version = version;
+                    foreach (appVersion item in CurrentAppVersions)
+                    {
+                        if (item.name == tempVersion.name)
+                        {
+                            if (tempVersion.version == "all")
+                            {
+                                downloadNewAPK = true;
+                                break;
+                            }
+                            if (item.version != tempVersion.version)
+                            {
+                                int i = CurrentAppVersions.IndexOf(item);
+                                CurrentAppVersions.RemoveAt(i);
+                                CurrentAppVersions.Insert(i, tempVersion);
+                                downloadNewAPK = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (downloadNewAPK)
+                    {
+                        AppDownloadWindow TikTokAPK = new AppDownloadWindow(programVersion, version.Replace('.','-'));
+                        TikTokAPK.ShowDialog();
+                    } else
+                    {
+                        Console.WriteLine("TikTok APK is up to date.");
+                    }
+                    break;
             }
             using (StreamWriter sw = new StreamWriter(Directory.GetCurrentDirectory() + @"\versions\appVersions.json"))
             {
@@ -443,6 +521,7 @@ namespace Revanced_Builder
         {
             Environment.Exit(0);
         }
+
 
         //Youtube ReVanced Stuff
 
@@ -700,6 +779,142 @@ namespace Revanced_Builder
             YoutubeMusicIncludedFeatures.Items.Remove(selectedFeature);
             YoutubeMusicExcludedFeaturesList.Add(selectedFeature);
             YoutubeMusicIncludedFeaturesList.Remove(selectedFeature);
+        }
+
+        //TikTok Revanced Stuff
+
+        List<string> TikTokExcludedFeaturesList = new List<string>();
+        List<string> TikTokIncludedFeaturesList = new List<string>();
+
+        private void TikTokBuildButton_Click(object sender, RoutedEventArgs e)
+        {
+            /*if (File.Exists(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\TikTokRevanced.apk"))
+            {
+                File.Delete(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks\TikTokRevanced.apk");
+            }
+            //DownloadAPK("com.zhiliaoapp.musically");
+            string zuluJDKPath = Directory.GetCurrentDirectory() + @"\zuluJDK\bin\";
+            string arguments = @" -jar Revanced\" + FileNames[0] + @" -a Revanced\Apks\TikTok.apk -o Revanced\RevancedApks\TikTokRevanced.apk -b Revanced\" + FileNames[1] + @" -m Revanced\" + FileNames[2];
+            if (TikTokIncludedFeaturesList.Count > 0)
+            {
+                foreach (string item in TikTokIncludedFeaturesList)
+                {
+                    arguments = arguments + " -i " + item;
+                }
+            }
+            if (TikTokExcludedFeaturesList.Count > 0)
+            {
+                foreach (string item in TikTokExcludedFeaturesList)
+                {
+                    arguments = arguments + " -e " + item;
+                }
+            }
+            Console.WriteLine(arguments);
+            ProcessStartInfo builderInfo = new ProcessStartInfo("java.exe", arguments)
+            {
+                CreateNoWindow = false,
+                UseShellExecute = true
+            };
+            builderInfo.WorkingDirectory = zuluJDKPath;
+            Process builder = new Process();
+            builder.StartInfo = builderInfo;
+            builder.Start();
+            builder.WaitForExit();
+            Process.Start(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\Revanced\RevancedApks");
+            try
+            {
+                DirectoryInfo dirInfo = new DirectoryInfo(Directory.GetCurrentDirectory() + @"\zuluJDK\bin\revanced-cache");
+                foreach (FileInfo file in dirInfo.GetFiles())
+                {
+                    if (file.Name.StartsWith("revanced") || file.Name.EndsWith(".apk") || file.Name.StartsWith("aapt"))
+                    {
+                        file.Delete();
+                    }
+                }
+            }
+            catch
+            {
+            }*/
+        }
+
+        private void TikTokExcludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (TikTokExcludedFeatures.SelectedIndex < 0)
+            {
+                TikTokExcludedFeatures.SelectedIndex = 0;
+            }
+            if (TikTokExcludedFeatures.Items.Count < 1)
+            {
+                TikTokFeatureDescription.Text = "";
+                return;
+            }
+            string temp;
+            TikTokFeatureDescription.Text = "";
+            try
+            {
+                temp = TikTokExcludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            foreach (string key in appDescription.Keys)
+            {
+                if (key == temp)
+                {
+                    TikTokFeatureDescription.Text = "Feature Description:\n" + appDescription[key];
+                }
+            }
+        }
+
+        private void TikTokIncludedFeatures_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (TikTokIncludedFeatures.Items.Count < 0)
+            {
+                return;
+            }
+        }
+
+        private void TikTokIncludeFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (TikTokExcludedFeatures.SelectedIndex < 0)
+            {
+                return;
+            }
+            string selectedFeature;
+            try
+            {
+                selectedFeature = TikTokExcludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            TikTokExcludedFeatures.Items.Remove(selectedFeature);
+            TikTokIncludedFeatures.Items.Add(selectedFeature);
+            TikTokExcludedFeaturesList.Remove(selectedFeature);
+            TikTokIncludedFeaturesList.Add(selectedFeature);
+        }
+
+        private void TikTokExcludeFeatureButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (TikTokIncludedFeatures.SelectedIndex < 0)
+            {
+                return;
+            }
+            string selectedFeature;
+            try
+            {
+                selectedFeature = TikTokIncludedFeatures.SelectedItem.ToString();
+            }
+            catch
+            {
+                return;
+            }
+            TikTokExcludedFeatures.Items.Add(selectedFeature);
+            TikTokIncludedFeatures.Items.Remove(selectedFeature);
+            TikTokExcludedFeaturesList.Add(selectedFeature);
+            TikTokIncludedFeaturesList.Remove(selectedFeature);
         }
     }
 }
